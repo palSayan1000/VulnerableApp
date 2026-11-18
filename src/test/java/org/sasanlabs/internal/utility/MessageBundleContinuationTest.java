@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -68,7 +70,7 @@ class MessageBundleContinuationTest {
     private static List<Path> messageBundles() throws URISyntaxException, IOException {
         URL i18n = MessageBundleContinuationTest.class.getResource("/i18n");
         assertNotNull(i18n, "/i18n is not on the classpath");
-        try (Stream<Path> entries = Files.list(Path.of(i18n.toURI()))) {
+        try (Stream<Path> entries = Files.list(Paths.get(i18n.toURI()))) {
             return entries.filter(p -> p.getFileName().toString().endsWith(".properties"))
                     .sorted()
                     .collect(Collectors.toList());
@@ -78,7 +80,7 @@ class MessageBundleContinuationTest {
     private static List<String> gluedContinuations(Path bundle) {
         List<String> lines;
         try {
-            lines = Files.readAllLines(bundle);
+            lines = Files.readAllLines(bundle, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new UncheckedIOException("cannot read " + bundle, e);
         }

@@ -1,8 +1,8 @@
 package org.sasanlabs.internal.utility.websocket;
 
-import jakarta.servlet.http.Cookie;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.Cookie;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -27,8 +27,9 @@ public class VulnerableAppWebSocketHandshakeInterceptor implements HandshakeInte
             ServerHttpResponse response,
             WebSocketHandler wsHandler,
             Map<String, Object> attributes) {
-        if (request instanceof ServletServerHttpRequest httpRequest) {
-            Cookie[] cookies = httpRequest.getServletRequest().getCookies();
+        if (request instanceof ServletServerHttpRequest) {
+            Cookie[] cookies =
+                    ((ServletServerHttpRequest) request).getServletRequest().getCookies();
             if (cookies != null) {
                 Map<String, String> cookieValues = new HashMap<>();
                 for (Cookie cookie : cookies) {

@@ -9,7 +9,6 @@ import org.sasanlabs.internal.utility.annotations.VulnerableAppWebSocketMapping;
 import org.sasanlabs.internal.utility.websocket.VulnerableAppWebSocketHandler;
 import org.sasanlabs.internal.utility.websocket.VulnerableAppWebSocketHandshakeInterceptor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -33,7 +32,7 @@ public class VulnerableAppWebSocketConfiguration implements WebSocketConfigurer 
     }
 
     @Override
-    public void registerWebSocketHandlers(@NonNull WebSocketHandlerRegistry registry) {
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         Map<String, Object> nameVsController =
                 envUtils.getAllClassesAnnotatedWithVulnerableAppWebSocketController();
         for (Map.Entry<String, Object> entry : nameVsController.entrySet()) {

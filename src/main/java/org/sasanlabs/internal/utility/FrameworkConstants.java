@@ -19,16 +19,14 @@ public interface FrameworkConstants {
 
     // HTML site map related constants
     String SITEMAP_HTML_DOCUMENT_START =
-            """
-            <!DOCTYPE html>
-            <html lang="en">
-            <head>
-            <meta charset="UTF-8">
-            <title>VulnerableApp Sitemap</title>
-            </head>
-            <body>
-            <h1>VulnerableApp Sitemap</h1>
-            """;
+            "<!DOCTYPE html>\n"
+                    + "<html lang=\"en\">\n"
+                    + "<head>\n"
+                    + "<meta charset=\"UTF-8\">\n"
+                    + "<title>VulnerableApp Sitemap</title>\n"
+                    + "</head>\n"
+                    + "<body>\n"
+                    + "<h1>VulnerableApp Sitemap</h1>\n";
     String SITEMAP_HTML_DOCUMENT_END = "</body>\n</html>\n";
 
     String HTTP = "http://";

@@ -218,10 +218,7 @@ class CsvExpectedIssuesProviderTest {
         Path csv = tempDir.resolve("expected.csv");
         write(
                 csv,
-                """
-                CWE,Vulnerability Type,Line,Number of Sources
-                CWE-89,SQL Injection,56,1
-                """);
+                "CWE,Vulnerability Type,Line,Number of Sources\n" + "CWE-89,SQL Injection,56,1\n");
 
         List<ExpectedIssue> issues =
                 new CsvExpectedIssuesProvider(csv.toString()).getExpectedIssues();

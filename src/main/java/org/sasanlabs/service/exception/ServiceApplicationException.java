@@ -1,13 +1,11 @@
 package org.sasanlabs.service.exception;
 
-import java.io.Serial;
-
 /**
  * @author KSASAN preetkaran20@gmail.com
  */
 public class ServiceApplicationException extends Exception {
 
-    @Serial private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     private ExceptionStatusCodeEnum exceptionStatusCode;
     private Object[] args;
 

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageBundle {
 
-    private final MessageSource messageSource;
+    private MessageSource messageSource;
 
     public MessageBundle(MessageSource messageSource) {
         this.messageSource = messageSource;

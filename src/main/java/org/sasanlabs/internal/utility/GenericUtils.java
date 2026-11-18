@@ -13,8 +13,8 @@ public final class GenericUtils {
 
     /**
      * @deprecated
-     * @param payload String
-     * @return String
+     * @param payload
+     * @return
      */
     @Deprecated
     public static String wrapPayloadInGenericVulnerableAppTemplate(String payload) {

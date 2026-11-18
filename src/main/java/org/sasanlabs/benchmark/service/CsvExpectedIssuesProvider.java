@@ -1,6 +1,5 @@
 package org.sasanlabs.benchmark.service;
 
-import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,9 +7,11 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -104,7 +105,7 @@ public class CsvExpectedIssuesProvider implements IExpectedIssuesProvider {
         if (csvPath.startsWith(CLASSPATH_PREFIX)) {
             return parseFromResource(csvPath.substring(CLASSPATH_PREFIX.length()));
         }
-        return parseFromPath(Path.of(csvPath));
+        return parseFromPath(Paths.get(csvPath));
     }
 
     private List<ExpectedIssue> parseFromResource(String location) throws IOException {
@@ -116,7 +117,7 @@ public class CsvExpectedIssuesProvider implements IExpectedIssuesProvider {
     }
 
     private List<ExpectedIssue> parseFromPath(Path path) throws IOException {
-        try (Reader reader = Files.newBufferedReader(path);
+        try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
                 CSVParser parser = FORMAT.parse(reader)) {
             return parseAll(parser);
         }
