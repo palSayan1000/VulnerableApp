@@ -21,7 +21,7 @@ public interface IEndPointsInformationProvider {
      * application like all the supported vulnerabilities, levels, attack vectors etc.
      *
      * @return {@code List<AllEndPointsResponseBean>} containing the supported endpoints
-     * @throws JsonProcessingException
+     * @throws JsonProcessingException exception
      */
     List<AllEndPointsResponseBean> getSupportedEndPoints() throws JsonProcessingException;
 
@@ -38,8 +38,8 @@ public interface IEndPointsInformationProvider {
      * purpose of testing scanning tools like ZAP/Burp etc.
      *
      * @return {@link ScannerResponseBean}'s List
-     * @throws JsonProcessingException
-     * @throws UnknownHostException
+     * @throws JsonProcessingException exception
+     * @throws UnknownHostException exception
      */
     List<ScannerResponseBean> getScannerRelatedEndPointInformation(String appUrl)
             throws JsonProcessingException, UnknownHostException;

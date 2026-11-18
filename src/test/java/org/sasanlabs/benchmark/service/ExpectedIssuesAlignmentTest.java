@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -48,7 +47,7 @@ class ExpectedIssuesAlignmentTest {
 
         List<String> misaligned = new ArrayList<>();
         for (ExpectedIssue issue : issues) {
-            Path source = Paths.get(issue.getFilePath());
+            Path source = Path.of(issue.getFilePath());
             if (!Files.isRegularFile(source)) {
                 misaligned.add(issue.getFilePath() + ":" + issue.getLine() + " (file not found)");
                 continue;

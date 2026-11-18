@@ -3,6 +3,8 @@ package org.sasanlabs.internal.utility;
 import java.util.Base64;
 
 public class EncodingUtils {
+    private EncodingUtils() {}
+
     public static String bytesToHex(byte[] data) {
         StringBuilder builder = new StringBuilder(data.length * 2);
         for (byte value : data) {

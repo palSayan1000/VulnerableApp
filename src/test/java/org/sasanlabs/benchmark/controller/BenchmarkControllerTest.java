@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class BenchmarkControllerTest {
                         "ZAP", 100.0, 1, 1, 0, 0, Collections.emptyList(), Collections.emptyList());
         when(benchmarkService.compare(any(ScannerFindings.class))).thenReturn(mockResult);
         when(benchmarkResultWriter.write(any(BenchmarkResult.class)))
-                .thenReturn(Paths.get("benchmarks/zap-results.json"));
+                .thenReturn(Path.of("benchmarks/zap-results.json"));
 
         String body =
                 "{\"tool\":\"ZAP\",\"findings\":["
@@ -88,7 +88,7 @@ class BenchmarkControllerTest {
         when(benchmarkService.compare(any(ScannerFindings.class)))
                 .thenReturn(withDetected, withoutDetected);
         when(benchmarkResultWriter.write(any(BenchmarkResult.class)))
-                .thenReturn(Paths.get("benchmarks/zap-results.json"));
+                .thenReturn(Path.of("benchmarks/zap-results.json"));
 
         String body = "{\"tool\":\"ZAP\",\"findings\":[]}";
 

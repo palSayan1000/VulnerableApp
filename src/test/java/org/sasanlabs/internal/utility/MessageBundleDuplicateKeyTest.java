@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +43,7 @@ class MessageBundleDuplicateKeyTest {
             throw new IllegalStateException("/i18n is not on the classpath");
         }
 
-        try (Stream<Path> entries = Files.list(Paths.get(i18n.toURI()))) {
+        try (Stream<Path> entries = Files.list(Path.of(i18n.toURI()))) {
             return entries.filter(p -> p.getFileName().toString().endsWith(".properties"))
                     .sorted()
                     .collect(Collectors.toList());
@@ -55,7 +53,7 @@ class MessageBundleDuplicateKeyTest {
     private static List<String> findDuplicates(Path bundle) throws IOException {
         DuplicateTrackingProperties properties = new DuplicateTrackingProperties();
 
-        try (Reader reader = Files.newBufferedReader(bundle, StandardCharsets.UTF_8)) {
+        try (Reader reader = Files.newBufferedReader(bundle)) {
             properties.load(reader);
         }
 

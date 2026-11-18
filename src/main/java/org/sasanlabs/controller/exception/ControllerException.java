@@ -1,5 +1,6 @@
 package org.sasanlabs.controller.exception;
 
+import java.io.Serial;
 import org.sasanlabs.service.exception.ExceptionStatusCodeEnum;
 import org.sasanlabs.service.exception.ServiceApplicationException;
 
@@ -8,7 +9,7 @@ import org.sasanlabs.service.exception.ServiceApplicationException;
  */
 public class ControllerException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
     private ExceptionStatusCodeEnum exceptionStatusCode;
     private Object[] args;
 

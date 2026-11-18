@@ -27,11 +27,11 @@ public class EnvUtils {
     }
 
     /**
-     * @param <T>
+     * @param <T> generic
      * @param clazz Type of the returned Bean
      * @param name name of Spring Bean
      * @return Instance of the Spring Bean based on the provided clazz and name.
-     * @throws ServiceApplicationException
+     * @throws ServiceApplicationException exception
      */
     public <T> T getInstance(Class<T> clazz, String name) throws ServiceApplicationException {
         if (this.context.containsBean(name)) {
@@ -48,9 +48,9 @@ public class EnvUtils {
      * Please use {@link this#getInstance(Class, String)} if possible as this method is not type
      * safe.
      *
-     * @param name
+     * @param name String
      * @return Instance of the Spring Bean based on the provided name
-     * @throws ServiceApplicationException
+     * @throws ServiceApplicationException exception
      */
     public Object getInstance(String name) throws ServiceApplicationException {
         if (this.context.containsBean(name)) {

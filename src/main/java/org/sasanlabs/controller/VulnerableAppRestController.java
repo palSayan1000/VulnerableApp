@@ -1,13 +1,13 @@
 package org.sasanlabs.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import org.sasanlabs.beans.AllEndPointsResponseBean;
 import org.sasanlabs.beans.LevelResponseBean;
 import org.sasanlabs.beans.ScannerMetaResponseBean;

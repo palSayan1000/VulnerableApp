@@ -8,33 +8,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.sasanlabs.beans.AllEndPointsResponseBean;
-import org.sasanlabs.beans.AttackVectorResponseBean;
-import org.sasanlabs.beans.ChallengeCardResponseBean;
-import org.sasanlabs.beans.LevelResponseBean;
-import org.sasanlabs.beans.ScannerResponseBean;
+import org.sasanlabs.beans.*;
 import org.sasanlabs.configuration.VulnerableAppProperties;
 import org.sasanlabs.internal.utility.EnvUtils;
 import org.sasanlabs.internal.utility.FrameworkConstants;
 import org.sasanlabs.internal.utility.MessageBundle;
 import org.sasanlabs.internal.utility.Protocol;
-import org.sasanlabs.internal.utility.annotations.AttackVector;
+import org.sasanlabs.internal.utility.annotations.*;
 import org.sasanlabs.internal.utility.annotations.ChallengeCard;
-import org.sasanlabs.internal.utility.annotations.VulnerableAppRequestMapping;
-import org.sasanlabs.internal.utility.annotations.VulnerableAppRestController;
-import org.sasanlabs.internal.utility.annotations.VulnerableAppWebSocketController;
-import org.sasanlabs.internal.utility.annotations.VulnerableAppWebSocketMapping;
 import org.sasanlabs.service.IEndPointsInformationProvider;
-import org.sasanlabs.vulnerableapp.facade.schema.ChallengeCardHint;
-import org.sasanlabs.vulnerableapp.facade.schema.ChallengeCardPayload;
-import org.sasanlabs.vulnerableapp.facade.schema.ResourceInformation;
-import org.sasanlabs.vulnerableapp.facade.schema.ResourceType;
-import org.sasanlabs.vulnerableapp.facade.schema.ResourceURI;
-import org.sasanlabs.vulnerableapp.facade.schema.Variant;
-import org.sasanlabs.vulnerableapp.facade.schema.VulnerabilityDefinition;
-import org.sasanlabs.vulnerableapp.facade.schema.VulnerabilityLevelDefinition;
-import org.sasanlabs.vulnerableapp.facade.schema.VulnerabilityLevelHint;
-import org.sasanlabs.vulnerableapp.facade.schema.VulnerabilityType;
+import org.sasanlabs.vulnerableapp.facade.schema.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,11 +28,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Service
 public class EndPointsInformationProvider implements IEndPointsInformationProvider {
 
-    private EnvUtils envUtils;
+    private final EnvUtils envUtils;
 
-    private MessageBundle messageBundle;
+    private final MessageBundle messageBundle;
 
-    private VulnerableAppProperties vulnerableAppProperties;
+    private final VulnerableAppProperties vulnerableAppProperties;
 
     int port;
 

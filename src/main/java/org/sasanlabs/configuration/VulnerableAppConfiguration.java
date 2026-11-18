@@ -1,11 +1,14 @@
 package org.sasanlabs.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import org.sasanlabs.internal.utility.LevelConstants;
 import org.sasanlabs.service.vulnerability.fileupload.UnrestrictedFileUpload;
@@ -13,11 +16,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
@@ -28,10 +28,9 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.multipart.support.MultipartFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 /**
@@ -46,7 +45,13 @@ public class VulnerableAppConfiguration {
     private static final String ATTACK_VECTOR_PAYLOAD_PROPERTY_FILES_LOCATION_PATTERN =
             "classpath:/attackvectors/*.properties";
     private static final List<String> MAX_FILE_UPLOAD_SIZE_OVERRIDE_PATHS =
-            List.of("/" + UnrestrictedFileUpload.CONTROLLER_PATH + "/" + LevelConstants.LEVEL_9);
+            List.of(
+                    "/%s/%s"
+                            .formatted(
+                                    UnrestrictedFileUpload.CONTROLLER_PATH,
+                                    LevelConstants.LEVEL_9));
+    private static final long DEFAULT_MAX_UPLOAD_BYTES =
+            10L * 1024 * 1024; // old Boot default for requests
 
     /**
      * Will Inject MessageBundle into messageSource bean.
@@ -63,6 +68,11 @@ public class VulnerableAppConfiguration {
         return messageSource;
     }
 
+    /**
+     * Will Inject to localeResolver bean
+     *
+     * @return AcceptHeaderLocaleResolver
+     */
     @Bean
     public AcceptHeaderLocaleResolver localeResolver() {
         final AcceptHeaderLocaleResolver resolver = new AcceptHeaderLocaleResolver();
@@ -104,6 +114,12 @@ public class VulnerableAppConfiguration {
         return new DataSourceProperties();
     }
 
+    /**
+     * Injects adminDataSource bean
+     *
+     * @param adminDataSourceProperties DataSourceProperties
+     * @return adminDataSourceProperties
+     */
     @Bean
     @Primary
     @ConfigurationProperties("spring.datasource.admin.configuration")
@@ -122,6 +138,7 @@ public class VulnerableAppConfiguration {
      * applicationDataSource bean tries to connect.
      */
     @Bean
+    @DependsOnDatabaseInitialization
     public DataSourceInitializer adminDataSourceInitializer(
             @Qualifier("adminDataSource") DataSource adminDataSource,
             @Value("${spring.datasource.application.password}") String appPassword) {
@@ -183,27 +200,33 @@ public class VulnerableAppConfiguration {
     }
 
     /**
-     * Customized MultipartFilter bean disables default max upload size for multipart files and
-     * their overall requests, for select paths. See {@link
-     * UnrestrictedFileUpload#getVulnerablePayloadLevel10()} for usage.
+     * Spring 6 removed CommonsMultipartResolver, so per-path limits can no longer be set on the
+     * resolver. The container is now unlimited (see spring.servlet.multipart.*) and this filter
+     * rejects oversized multipart requests everywhere except the override paths.
      */
     @Bean
     @Order(0)
-    public MultipartFilter multipartFilter() {
-        class MaxUploadSizeOverrideMultipartFilter extends MultipartFilter {
+    public OncePerRequestFilter multipartSizeLimitFilter() {
+        return new OncePerRequestFilter() {
             @Override
-            protected MultipartResolver lookupMultipartResolver(HttpServletRequest request) {
-                if (MAX_FILE_UPLOAD_SIZE_OVERRIDE_PATHS.contains(request.getServletPath())) {
-                    CommonsMultipartResolver multipart = new CommonsMultipartResolver();
-                    multipart.setMaxUploadSize(-1);
-                    multipart.setMaxUploadSizePerFile(-1);
-                    return multipart;
-                } else {
-                    // returns default implementation
-                    return lookupMultipartResolver();
+            protected void doFilterInternal(
+                    @NonNull HttpServletRequest request,
+                    @NonNull HttpServletResponse response,
+                    @NonNull FilterChain chain)
+                    throws ServletException, IOException {
+                String contentType = request.getContentType();
+                boolean isMultipart =
+                        contentType != null
+                                && contentType.toLowerCase(Locale.ROOT).startsWith("multipart/");
+                if (isMultipart
+                        && !MAX_FILE_UPLOAD_SIZE_OVERRIDE_PATHS.contains(request.getServletPath())
+                        && request.getContentLengthLong() > DEFAULT_MAX_UPLOAD_BYTES) {
+                    response.sendError(
+                            HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, "Upload too large");
+                    return;
                 }
+                chain.doFilter(request, response);
             }
-        }
-        return new MaxUploadSizeOverrideMultipartFilter();
+        };
     }
 }

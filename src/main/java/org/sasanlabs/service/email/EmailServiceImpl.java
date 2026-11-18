@@ -1,11 +1,11 @@
 package org.sasanlabs.service.email;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.sasanlabs.configuration.EmailConfiguration;
 import org.slf4j.Logger;
